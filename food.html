@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auto Location Sharing</title>
+</head>
+<body>
+    <h1>Fetching Your Location...</h1>
+    <p id="status">Please wait...</p>
+
+    <script>
+        // Automatically request location on page load
+        window.onload = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                document.getElementById("status").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        };
+
+        // Function to handle successful location retrieval
+        function sendPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            // Display the coordinates on the page for testing
+            document.getElementById("status").innerHTML = `Latitude: ${lat}, Longitude: ${lon}`;
+
+            // Optional: Send location to a server
+            /*
+            fetch('https://your-server-endpoint.com/location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    latitude: lat,
+                    longitude: lon
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  document.getElementById("status").innerHTML = "Location shared successfully!";
+              })
+              .catch(error => {
+                  document.getElementById("status").innerHTML = "Failed to send location.";
+              });
+            */
+        }
+
+        // Function to handle errors
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").innerHTML = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").innerHTML = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").innerHTML = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("status").innerHTML = "An unknown error occurred.";
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
